@@ -1,0 +1,5 @@
+#Start recording tcl command: 6/11/2023 13:55:17
+#Project Location: C:/Users/Reinhard/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/differentialinput; Project name: DifferentialInput
+prj_project open "C:/Users/Reinhard/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/differentialinput/DifferentialInput.ldf"
+prj_run Map -impl impl1 -task MapTrace
+#Stop recording: 6/11/2023 19:28:13

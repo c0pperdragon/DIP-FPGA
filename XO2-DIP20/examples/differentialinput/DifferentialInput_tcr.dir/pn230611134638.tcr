@@ -1,0 +1,13 @@
+#Start recording tcl command: 6/11/2023 10:42:46
+#Project Location: C:/Users/Reinhard/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/differentialinput; Project name: DifferentialInput
+prj_project new -name "DifferentialInput" -impl "impl1" -dev LCMXO2-1200HC-5SG32C -synthesis "synplify"
+prj_project save
+prj_src add "C:/Users/Reinhard/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/differentialinput/DifferentialInput.vhd"
+prj_run Map -impl impl1 -task MapTrace
+prj_run Synthesis -impl impl1 -task Synplify_Synthesis
+prj_run Synthesis -impl impl1 -task Synplify_Synthesis
+prj_run Map -impl impl1 -task MapTrace
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+#Stop recording: 6/11/2023 13:46:38

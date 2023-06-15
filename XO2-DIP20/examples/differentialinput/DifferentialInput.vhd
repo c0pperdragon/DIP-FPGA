@@ -8,7 +8,8 @@ entity DifferentialInput is
 		DIFFIN1     : in std_logic;
 		DIFFIN2     : in std_logic;
 		DIFFIN3     : in std_logic;
-		LED     : out std_logic_vector(3 downto 0)
+		
+		LED     : out std_logic_vector(8 downto 0)
 	);	
 
 	ATTRIBUTE IO_TYPES : string;
@@ -27,5 +28,10 @@ begin
 		LED(1) <= DIFFIN1;
 		LED(2) <= DIFFIN2;
 		LED(3) <= DIFFIN3;
+		LED(4) <= '0';		
+		LED(5) <= '0';
+		LED(6) <= '0';
+		LED(7) <= '0';
+		LED(8) <= '0';
 	end process;
 end immediate;
