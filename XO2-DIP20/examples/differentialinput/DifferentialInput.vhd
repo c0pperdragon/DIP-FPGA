@@ -1,37 +1,45 @@
 library ieee;
+library machxo2;
 use ieee.numeric_std.all;
 use ieee.std_logic_1164.all;
+use machxo2.all;
 
 entity DifferentialInput is	
 	port (
 		DIFFIN0     : in std_logic;
-		DIFFIN1     : in std_logic;
-		DIFFIN2     : in std_logic;
-		DIFFIN3     : in std_logic;
-		
-		LED     : out std_logic_vector(8 downto 0)
+		LED         : out std_logic_vector(1 downto 0)
 	);	
 
 	ATTRIBUTE IO_TYPES : string;
 	ATTRIBUTE IO_TYPES OF DIFFIN0: SIGNAL IS "LVDS,-";
-	ATTRIBUTE IO_TYPES OF DIFFIN1: SIGNAL IS "LVDS,-";
-	ATTRIBUTE IO_TYPES OF DIFFIN2: SIGNAL IS "LVDS,-";
-	ATTRIBUTE IO_TYPES OF DIFFIN3: SIGNAL IS "LVDS,-";
 end entity;
 
-
 architecture immediate of DifferentialInput is
+
+COMPONENT OSCH
+	GENERIC (NOM_FREQ: string);
+	PORT (
+		STDBY:IN std_logic;
+		OSC:OUT std_logic;
+		SEDSTDBY:OUT std_logic
+	);
+END COMPONENT;
+
+signal CLKOSC : std_logic;
+
 begin
-	process (DIFFIN0,DIFFIN1,DIFFIN2,DIFFIN3)
+	-- instantiate internal oscillator
+	OSCInst0: OSCH
+	GENERIC MAP( NOM_FREQ => "2.08" )
+	PORT MAP ( STDBY=> '0', OSC => CLKOSC,	SEDSTDBY => open );
+
+	process (CLKOSC)
+	variable x:std_logic := '0';
 	begin
-		LED(0) <= DIFFIN0;
-		LED(1) <= DIFFIN1;
-		LED(2) <= DIFFIN2;
-		LED(3) <= DIFFIN3;
-		LED(4) <= '0';		
-		LED(5) <= '0';
-		LED(6) <= '0';
-		LED(7) <= '0';
-		LED(8) <= '0';
+		if rising_edge(CLKOSC) then
+			x := DIFFIN0;
+		end if;
+		LED(0) <= x;
+		LED(1) <= not x;
 	end process;
 end immediate;
