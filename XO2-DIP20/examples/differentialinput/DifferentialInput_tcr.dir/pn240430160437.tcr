@@ -1,0 +1,12 @@
+#Start recording tcl command: 4/29/2024 12:51:35
+#Project Location: C:/Users/Reinhard/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/differentialinput; Project name: DifferentialInput
+prj_project open "C:/Users/Reinhard/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/differentialinput/DifferentialInput.ldf"
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_project save
+prj_project close
+#Stop recording: 4/30/2024 16:04:37
