@@ -1,0 +1,19 @@
+#Start recording tcl command: 6/24/2024 17:37:38
+#Project Location: C:/Users/Reinhard/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/PLLtolerance; Project name: PLLtolerance
+prj_project new -name "PLLtolerance" -impl "impl1" -dev LCMXO2-1200HC-4SG32C -synthesis "synplify"
+prj_project save
+prj_src add "C:/Users/Reinhard/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/PLLtolerance/PLLTolerance.vhd"
+prj_src add "C:/Users/Reinhard/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/PLLtolerance/PLL.vhd"
+prj_run Map -impl impl1 -task MapTrace
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_project save
+prj_project close
+#Stop recording: 6/24/2024 18:44:00
