@@ -1,0 +1,13 @@
+#Start recording tcl command: 8/30/2024 16:19:53
+#Project Location: C:/Users/Reinhard/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/ADC; Project name: ADC
+prj_project new -name "ADC" -impl "impl1" -dev LCMXO2-1200HC-4SG32C -synthesis "synplify"
+prj_project save
+prj_src add "C:/Users/Reinhard/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/ADC/SimpleADC.vhd"
+prj_run Map -impl impl1 -task MapTrace
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_src add "C:/Users/Reinhard/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/ADC/PLL200.vhd"
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+#Stop recording: 8/30/2024 18:01:33
