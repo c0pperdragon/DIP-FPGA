@@ -1,0 +1,5 @@
+#Start recording tcl command: 11/6/2025 15:05:29
+#Project Location: C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/PLLtolerance; Project name: PLLtolerance
+prj_project open "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/PLLtolerance/PLLtolerance.ldf"
+prj_project close
+#Stop recording: 11/6/2025 15:07:58

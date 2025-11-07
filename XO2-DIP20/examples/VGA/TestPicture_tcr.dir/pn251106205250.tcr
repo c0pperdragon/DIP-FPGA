@@ -1,0 +1,9 @@
+#Start recording tcl command: 11/6/2025 18:01:07
+#Project Location: C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VGA; Project name: TestPicture
+prj_project new -name "TestPicture" -impl "impl1" -dev LCMXO2-1200HC-4SG32C -synthesis "lse"
+prj_project save
+prj_src add "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VGA/source/TestPicture.vhd"
+prj_src add "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VGA/PLL_25_175.vhd"
+prj_run Synthesis -impl impl1 -task Lattice_Synthesis
+prj_run Export -impl impl1 -task Jedecgen
+#Stop recording: 11/6/2025 20:52:50
