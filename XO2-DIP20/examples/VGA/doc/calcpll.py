@@ -13,3 +13,4 @@ def calc(target):
     print ("best for ",target,": ",bestvco/10,":",bestdivider,"=", bestvco/bestdivider);
 
 calc(25.175)
+calc(15.76)

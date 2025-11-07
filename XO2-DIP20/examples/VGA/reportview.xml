@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Report>
 <ReportView version="2.0">
+    <Implement name="C64">
+        <ToolReport id="tooldec" path="" status="0"/>
+        <ToolReport id="toolhle_genhierarchy" path="C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VGA/C64/hdla_gen_hierarchy.html" status="1"/>
+        <ToolReport id="toolpio" path="" status="0"/>
+        <ToolReport id="toolsso" path="" status="0"/>
+    </Implement>
     <Implement name="impl1">
         <ToolReport id="tooldec" path="" status="0"/>
         <ToolReport id="toolhle_genhierarchy" path="C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VGA/impl1/hdla_gen_hierarchy.html" status="1"/>

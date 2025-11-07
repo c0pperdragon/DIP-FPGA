@@ -1,0 +1,21 @@
+#Start recording tcl command: 11/7/2025 18:30:49
+#Project Location: C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VGA; Project name: TestPicture
+prj_project open "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VGA/TestPicture.ldf"
+prj_impl new "C64" -dir "C64" -strategy "Area" -synthesis "lse"
+prj_impl active "C64"
+prj_src add "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VGA/source/C64.vhd"
+prj_src add "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VGA/PLL_15_76.vhd"
+prj_run Export -impl C64 -task Jedecgen
+prj_run Export -impl C64 -task Jedecgen
+prj_run Export -impl C64 -task Jedecgen
+prj_run Export -impl C64 -task Jedecgen
+prj_run Export -impl C64 -task Jedecgen
+prj_run Export -impl C64 -task Jedecgen
+prj_run Export -impl C64 -task Jedecgen
+prj_run Export -impl C64 -task Jedecgen
+prj_run Export -impl C64 -task Jedecgen
+prj_run Export -impl C64 -task Jedecgen
+prj_run Export -impl C64 -task Jedecgen
+prj_run Export -impl C64 -task Jedecgen
+prj_run Export -impl C64 -task Jedecgen
+#Stop recording: 11/7/2025 20:02:00
