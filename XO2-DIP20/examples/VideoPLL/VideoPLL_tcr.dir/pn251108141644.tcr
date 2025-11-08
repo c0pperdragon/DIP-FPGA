@@ -1,0 +1,12 @@
+#Start recording tcl command: 11/8/2025 10:44:49
+#Project Location: C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VideoPLL; Project name: VideoPLL
+prj_project open "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VideoPLL/VideoPLL.ldf"
+prj_run Synthesis -impl impl1 -task Lattice_Synthesis
+prj_run Export -impl impl1 -task Jedecgen
+prj_src add "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VideoPLL/PLL_8x120.vhd"
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Synthesis -impl impl1 -task Lattice_Synthesis
+prj_run Synthesis -impl impl1 -task Lattice_Synthesis
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+#Stop recording: 11/8/2025 14:16:44

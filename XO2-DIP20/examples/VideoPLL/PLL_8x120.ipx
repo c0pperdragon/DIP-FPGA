@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DiamondModule name="PLL_8x120" module="PLL" VendorName="Lattice Semiconductor Corporation" generator="IPexpress" date="2025 11 08 13:28:47.252" version="5.8" type="Module" synthesis="lse" source_format="VHDL">
+  <Package>
+		<File name="PLL_8x120.lpc" type="lpc" modified="2025 11 08 13:28:41.789"/>
+		<File name="PLL_8x120.vhd" type="top_level_vhdl" modified="2025 11 08 13:28:41.857"/>
+		<File name="PLL_8x120_tmpl.vhd" type="template_vhdl" modified="2025 11 08 13:28:41.858"/>
+  </Package>
+</DiamondModule>
