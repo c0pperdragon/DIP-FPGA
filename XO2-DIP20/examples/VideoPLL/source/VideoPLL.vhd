@@ -64,17 +64,59 @@ begin
 		end if;	
 	end process;
 	
-	-- subdivide to pixels
-	process (CLK0) 
-	begin
-		if rising_edge(CLK0) then
-			PIXELCLK <= VIDEO;
-		end if;
-	end process;
 	
 	process (CLK0,CLK1,CLK2,CLK3)
 	begin
-		TESTCLK <= CLK3 & CLK2 & CLK1 & CLK0;
+		TESTCLK <= "0000"; -- CLK3 & CLK2 & CLK1 & CLK0;
 	end process;
+	
+	-- subdivide to pixels
+	process (CLK0,CLK1,CLK2,CLK3) 
+	variable x:std_logic_vector(7 downto 0);
+	variable inputhalf:std_logic_vector(3 downto 0);
+	
+	variable incomming:std_logic_vector(7 downto 0);
+	variable outgoing:std_logic_vector(7 downto 0);
+	
+	variable outputhalf:std_logic_vector(3 downto 0);
+	variable y:std_logic_vector(7 downto 0);
+	
+	begin
+		-- send out data finely staggered by clocks
+		if falling_edge(CLK0) then 
+			outputhalf := outgoing(7 downto 4);
+			y(0) := outgoing(0); 
+		end if;
+		if falling_edge(CLK1) then y(1) := outgoing(1); end if;
+		if falling_edge(CLK2) then y(2) := outgoing(2); end if;
+		if falling_edge(CLK3) then y(3) := outgoing(3); end if;
+		if rising_edge(CLK0) then y(4) := outputhalf(0); end if;
+		if rising_edge(CLK1) then y(5) := outputhalf(1); end if;
+		if rising_edge(CLK2) then y(6) := outputhalf(2); end if;
+		if rising_edge(CLK3) then y(7) := outputhalf(3); end if;
+		PIXELCLK <= y(0) or y(1) or y(2) or y(3) or y(4) or y(5) or y(6) or y(7);
+		
+		-- do processing in one clock domain
+		if rising_edge(CLK0) then
+			outgoing := incomming;
+		end if;
+		
+		-- aquire finely timed samples of the input signal for lower-frequency main processing
+		if falling_edge(CLK0) then 
+			inputhalf := x(3 downto 0);
+			x(0) := VIDEO; 
+		end if;
+		if falling_edge(CLK1) then x(1) := VIDEO; end if;
+		if falling_edge(CLK2) then x(2) := VIDEO; end if;
+		if falling_edge(CLK3) then x(3) := VIDEO; end if;
+		if rising_edge(CLK0) then 
+			incomming := x(7 downto 4) & inputhalf;
+			x(4) := VIDEO; 
+		end if;
+		if rising_edge(CLK1) then x(5) := VIDEO; end if;
+		if rising_edge(CLK2) then x(6) := VIDEO; end if;
+		if rising_edge(CLK3) then x(7) := VIDEO; end if;
+	end process;
+	
 	
 end immediate;
