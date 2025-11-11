@@ -1,0 +1,24 @@
+#Start recording tcl command: 11/11/2025 09:43:02
+#Project Location: C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VideoPLL; Project name: VideoPLL
+prj_project open "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VideoPLL/VideoPLL.ldf"
+prj_run Synthesis -impl impl1 -task Lattice_Synthesis
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_strgy set "Timing"
+prj_run Export -impl impl1 -task Jedecgen
+prj_run PAR -impl impl1 -task IOTiming
+prj_strgy set "Strategy1"
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Synthesis -impl impl1 -task Lattice_Synthesis
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+#Stop recording: 11/11/2025 14:03:33
