@@ -110,6 +110,56 @@ prj_project open "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/Vi
 
 
 
+<A name="pn251111140333"></A><B><U><big>pn251111140333</big></U></B>
+#Start recording tcl command: 11/11/2025 09:43:02
+#Project Location: C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VideoPLL; Project name: VideoPLL
+prj_project open "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VideoPLL/VideoPLL.ldf"
+prj_run Synthesis -impl impl1 -task Lattice_Synthesis
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_strgy set "Timing"
+prj_run Export -impl impl1 -task Jedecgen
+prj_run PAR -impl impl1 -task IOTiming
+prj_strgy set "Strategy1"
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Synthesis -impl impl1 -task Lattice_Synthesis
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+#Stop recording: 11/11/2025 14:03:33
+
+
+
+<A name="pn251112094151"></A><B><U><big>pn251112094151</big></U></B>
+#Start recording tcl command: 11/12/2025 09:08:43
+#Project Location: C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VideoPLL; Project name: VideoPLL
+C:/Users/reinh/Documents/GitHub_Lumacode/LumaCode/signalgenerator/diamond
+SignalGenerator
+#Start recording tcl command: 11/12/2025 09:41:51
+#Project Location: C:/Users/reinh/Documents/GitHub_Lumacode/LumaCode/signalgenerator/diamond; Project name: SignalGenerator
+prj_project open "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VideoPLL/VideoPLL.ldf"
+prj_run Synthesis -impl impl1 -task Lattice_Synthesis
+prj_run Export -impl impl1 -task Jedecgen
+prj_run PAR -impl impl1 -task IOTiming
+prj_run PAR -impl impl1 -task PARTrace
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_project save
+prj_project close
+prj_project open "C:/Users/reinh/Documents/GitHub_Lumacode/LumaCode/signalgenerator/diamond/SignalGenerator.ldf"
+#Stop recording: 11/12/2025 09:41:51
+
+
+
 <BR>
 <BR>
 <BR>

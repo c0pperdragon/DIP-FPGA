@@ -5,15 +5,15 @@ use ieee.std_logic_1164.all;
 entity VideoPLL is	
 	port (
 		CLK10        : in std_logic;   -- reference clock
-		VID0         : in std_logic;   -- video signal reaches level 0 
+		CSYNC        : in std_logic;   -- csync input detected 
 		VID1         : in std_logic;   -- video signal reaches level 1 
 		VID2         : in std_logic;   -- video signal reaches level 2 
 		VID3         : in std_logic;   -- video signal reaches level 3 
+		SELECTOR     : in std_logic;
 		OUTPATTERN   : out std_logic_vector(7 downto 0) -- generated pattern for debugging
 	);	
 	
 	ATTRIBUTE IO_TYPES : string;
-	ATTRIBUTE IO_TYPES OF VID0: SIGNAL IS "LVDS,-";
 	ATTRIBUTE IO_TYPES OF VID1: SIGNAL IS "LVDS,-";
 	ATTRIBUTE IO_TYPES OF VID2: SIGNAL IS "LVDS,-";
 	ATTRIBUTE IO_TYPES OF VID3: SIGNAL IS "LVDS,-";
@@ -32,21 +32,48 @@ architecture immediate of VideoPLL is
 	end component;
 	
 	signal CLK0,CLK1,CLK2,CLK3:std_logic;
+	
+	signal a1:integer range 0 to 2**11-1;
+	signal a2:integer range 0 to 2**12-1;
+	signal a3:integer range 0 to 2**12-1;
+	signal a4:integer range 0 to 2**13-1;
+	signal a5:integer range 0 to 2**14-1;
+	signal a6:integer range 0 to 2**14-1;
+	signal a7:integer range 0 to 2**14-1;
+	signal a8:integer range 0 to 2**14-1;
 begin
 	
 	pll0: PLL_8x120 port map ( CLK10, CLK0, CLK1, CLK2, CLK3 );
 	
-	process (VID0,VID1,VID2,VID3, CLK0)
+	process (SELECTOR)
+	variable ax:integer range 0 to 2**11-1;
+	begin
+		if SELECTOR='0' then
+			ax := 1362;
+		else
+			ax := 1008;
+		end if;
+		a1 <= ax;
+		a2 <= ax*2;	
+		a3 <= ax*3;	
+		a4 <= ax*4;	
+		a5 <= ax*5;	
+		a6 <= ax*6;	
+		a7 <= ax*7;	
+		a8 <= ax*8;	
+	end process;
+	
+	process (CSYNC,VID1,VID2,VID3, CLK0)
 	begin
 		OUTPATTERN(6 downto 4) <= "000";
-		OUTPATTERN(0) <= VID0;
+		OUTPATTERN(0) <= CSYNC;
 		OUTPATTERN(1) <= VID1;
 		OUTPATTERN(2) <= VID2;
 		OUTPATTERN(3) <= VID3;
 	end process;
 		
 	-- subdivide to pixels
-	process (CLK0,CLK1,CLK2,CLK3, VID0) 
+	process (CLK0,CLK1,CLK2,CLK3, CSYNC) 
 	
 	variable x:std_logic_vector(7 downto 0);
 	variable inputhalf:std_logic_vector(3 downto 0);
@@ -61,14 +88,6 @@ begin
 	variable rowcounter:integer range 0 to 2**16-1 := 0;
 	
 	variable accu:integer range 0 to 2**16-1 := 0;
-	constant a1:integer := 1362;
-	constant a2:integer := 2*a1;
-	constant a3:integer := 3*a1;
-	constant a4:integer := 4*a1;
-	constant a5:integer := 5*a1;
-	constant a6:integer := 6*a1;
-	constant a7:integer := 7*a1;
-	constant a8:integer := 8*a1;
 	variable b:integer range 0 to 2**16-1 := 0;
 	
 	begin
@@ -144,18 +163,18 @@ begin
 		-- aquire finely timed samples of the input signal for lower-frequency main processing
 		if falling_edge(CLK0) then 
 			inputhalf := x(3 downto 0);
-			x(0) := VID0; 
+			x(0) := CSYNC; 
 		end if;
-		if falling_edge(CLK1) then x(1) := VID0; end if;
-		if falling_edge(CLK2) then x(2) := VID0; end if;
-		if falling_edge(CLK3) then x(3) := VID0; end if;
+		if falling_edge(CLK1) then x(1) := CSYNC; end if;
+		if falling_edge(CLK2) then x(2) := CSYNC; end if;
+		if falling_edge(CLK3) then x(3) := CSYNC; end if;
 		if rising_edge(CLK0) then 
 			incomming := x(7 downto 4) & inputhalf;
-			x(4) := VID0; 
+			x(4) := CSYNC; 
 		end if;
-		if rising_edge(CLK1) then x(5) := VID0; end if;
-		if rising_edge(CLK2) then x(6) := VID0; end if;
-		if rising_edge(CLK3) then x(7) := VID0; end if;
+		if rising_edge(CLK1) then x(5) := CSYNC; end if;
+		if rising_edge(CLK2) then x(6) := CSYNC; end if;
+		if rising_edge(CLK3) then x(7) := CSYNC; end if;
 		
 		-- combinational logic from various clock domains
 		OUTPATTERN(7) <= y(0) or y(1) or y(2) or y(3) or y(4) or y(5) or y(6) or y(7);

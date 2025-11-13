@@ -1,0 +1,6 @@
+#Start recording tcl command: 11/13/2025 15:03:36
+#Project Location: C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VideoPLL; Project name: VideoPLL
+prj_project open "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VideoPLL/VideoPLL.ldf"
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+#Stop recording: 11/13/2025 16:43:38

@@ -1,0 +1,18 @@
+#Start recording tcl command: 11/12/2025 09:08:43
+#Project Location: C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VideoPLL; Project name: VideoPLL
+C:/Users/reinh/Documents/GitHub_Lumacode/LumaCode/signalgenerator/diamond
+SignalGenerator
+#Start recording tcl command: 11/12/2025 09:41:51
+#Project Location: C:/Users/reinh/Documents/GitHub_Lumacode/LumaCode/signalgenerator/diamond; Project name: SignalGenerator
+prj_project open "C:/Users/reinh/Documents/GitHub/DIP-FPGA/XO2-DIP20/examples/VideoPLL/VideoPLL.ldf"
+prj_run Synthesis -impl impl1 -task Lattice_Synthesis
+prj_run Export -impl impl1 -task Jedecgen
+prj_run PAR -impl impl1 -task IOTiming
+prj_run PAR -impl impl1 -task PARTrace
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_run Export -impl impl1 -task Jedecgen
+prj_project save
+prj_project close
+prj_project open "C:/Users/reinh/Documents/GitHub_Lumacode/LumaCode/signalgenerator/diamond/SignalGenerator.ldf"
+#Stop recording: 11/12/2025 09:41:51
