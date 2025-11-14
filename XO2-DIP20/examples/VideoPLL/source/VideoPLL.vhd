@@ -32,6 +32,8 @@ architecture immediate of VideoPLL is
 	end component;
 	
 	signal a:integer range 0 to 2**11-1;
+	signal syncshift:integer range 0 to 255;
+	
 	signal CLK0,CLK1,CLK2,CLK3:std_logic;
 	signal PIXELCLK:std_logic;
 begin
@@ -43,8 +45,10 @@ begin
 	begin
 		if SELECTOR='0' then
 			a <= 1368;
+			syncshift <= 20;
 		else
 			a <= 1008;
+			syncshift <= 5;
 		end if;
 	end process;
 	
@@ -78,12 +82,14 @@ begin
 	variable thisedgetime:integer range 0 to 2**20-1;
 	type edgetimes_t is array (0 to 7) of integer range 0 to 2**20-1;
 	variable edgetimes:edgetimes_t;
+	variable edgecountdown:integer range 0 to 255 := 0;
 	variable fallingedge:boolean := false;
 	variable edgeoffset:integer range 0 to 7 := 0;
 	variable prev_incomming:std_logic_vector(7 downto 0);
 	
 	variable accu:integer range 0 to 2**20-1 := 0;
 	variable b:integer range 0 to 2**20-1 := 0;
+	constant accustart:integer := 262144; -- about half of b, using only one 1-bit
 	
 	begin
 		-- send out data finely staggered by clocks
@@ -114,22 +120,22 @@ begin
 			
 			-- processing after edge was detected
 			if fallingedge then
-				-- reset bresenheim
-				case edgeoffset is
-				when 0 => accu := b/2 + (0)*8;
-				when 1 => accu := b/2 + (a) * 8;
-				when 2 => accu := b/2 + (2*a) * 8;
-				when 3 => accu := b/2 + (a+2*a) * 8;
-				when 4 => accu := b/2 + (4*a) * 8;
-				when 5 => accu := b/2 + (4*a+a) * 8;
-				when 6 => accu := b/2 + (4*a+2*a) * 8;
-				when 7 => accu := b/2 + (4*a+2*a+a) * 8;
-				end case;
 				-- use total time of last 8 lines and compute bresenheim value 
 				thisedgetime := ticker + edgeoffset;
 				b := (thisedgetime - edgetimes(7)) mod (2**20);				
 				edgetimes(1 to 7) := edgetimes(0 to 6);
 				edgetimes(0) := thisedgetime;
+				-- reset bresenheim
+				case edgeoffset is
+				when 0 => accu := accustart + (0)*8;
+				when 1 => accu := accustart + (a) * 8;
+				when 2 => accu := accustart + (2*a) * 8;
+				when 3 => accu := accustart + (a+2*a) * 8;
+				when 4 => accu := accustart + (4*a) * 8;
+				when 5 => accu := accustart + (4*a+a) * 8;
+				when 6 => accu := accustart + (4*a+2*a) * 8;
+				when 7 => accu := accustart + (4*a+2*a+a) * 8;
+				end case;
 			-- when no edge, run the bresenheim algorithm 		
 			elsif accu>=a*8*8 then
 				accu := accu-a*8*8;
@@ -138,19 +144,23 @@ begin
 			end if;
 		
 			-- detect falling edge and determine the exact time shift of the edge
+			fallingedge := false;
 			if prev_incomming = "11111111" and incomming/="11111111" then
-				if incomming(0)='0' then edgeoffset:=0; 
-				elsif incomming(1)='0' then edgeoffset:=1;
-				elsif incomming(2)='0' then edgeoffset:=2;
-				elsif incomming(3)='0' then edgeoffset:=3;
-				elsif incomming(4)='0' then edgeoffset:=4;
-				elsif incomming(5)='0' then edgeoffset:=5;
-				elsif incomming(6)='0' then edgeoffset:=6;
-				else edgeoffset:=7; 
+				if incomming(0)='0' then edgecountdown := 1+syncshift; 
+				elsif incomming(1)='0' then edgecountdown := 2+syncshift;
+				elsif incomming(2)='0' then edgecountdown := 3+syncshift;
+				elsif incomming(3)='0' then edgecountdown := 4+syncshift;
+				elsif incomming(4)='0' then edgecountdown := 5+syncshift;
+				elsif incomming(5)='0' then edgecountdown := 6+syncshift;
+				elsif incomming(6)='0' then edgecountdown := 7+syncshift;
+				else edgecountdown := 9+syncshift; 
 				end if;
+			elsif edgecountdown>=9 then
+				edgecountdown := edgecountdown-8;
+			elsif edgecountdown>=1 then
+				edgeoffset := edgecountdown-1;
+				edgecountdown := 0;
 				fallingedge := true;
-			else
-				fallingedge := false;
 			end if;
 			prev_incomming := incomming;
 
