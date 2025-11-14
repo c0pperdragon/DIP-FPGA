@@ -31,16 +31,9 @@ architecture immediate of VideoPLL is
         CLKOS3: out  std_logic);
 	end component;
 	
+	signal a:integer range 0 to 2**11-1;
 	signal CLK0,CLK1,CLK2,CLK3:std_logic;
-	
-	signal a1:integer range 0 to 2**11-1;
-	signal a2:integer range 0 to 2**12-1;
-	signal a3:integer range 0 to 2**12-1;
-	signal a4:integer range 0 to 2**13-1;
-	signal a5:integer range 0 to 2**14-1;
-	signal a6:integer range 0 to 2**14-1;
-	signal a7:integer range 0 to 2**14-1;
-	signal a8:integer range 0 to 2**14-1;
+	signal PIXELCLK:std_logic;
 begin
 	
 	pll0: PLL_8x120 port map ( CLK10, CLK0, CLK1, CLK2, CLK3 );
@@ -49,29 +42,28 @@ begin
 	variable ax:integer range 0 to 2**11-1;
 	begin
 		if SELECTOR='0' then
-			ax := 1362;
+			a <= 1368;
 		else
-			ax := 1008;
+			a <= 1008;
 		end if;
-		a1 <= ax;
-		a2 <= ax*2;	
-		a3 <= ax*3;	
-		a4 <= ax*4;	
-		a5 <= ax*5;	
-		a6 <= ax*6;	
-		a7 <= ax*7;	
-		a8 <= ax*8;	
 	end process;
 	
-	process (CSYNC,VID1,VID2,VID3, CLK0)
+	process (CSYNC,VID1,VID2,VID3,PIXELCLK)
+	variable t:std_logic := '0';
 	begin
-		OUTPATTERN(6 downto 4) <= "000";
+		if rising_edge(PIXELCLK) then
+			t := not t;
+		end if;
 		OUTPATTERN(0) <= CSYNC;
 		OUTPATTERN(1) <= VID1;
 		OUTPATTERN(2) <= VID2;
 		OUTPATTERN(3) <= VID3;
+		OUTPATTERN(4) <= '0';
+		OUTPATTERN(5) <= PIXELCLK;
+		OUTPATTERN(6) <= '0';
+		OUTPATTERN(7) <= t;
 	end process;
-		
+				
 	-- subdivide to pixels
 	process (CLK0,CLK1,CLK2,CLK3, CSYNC) 
 	
@@ -82,13 +74,16 @@ begin
 	variable outputhalf:std_logic_vector(3 downto 0);
 	variable y:std_logic_vector(7 downto 0);
 	
-	variable prev_incomming:std_logic_vector(7 downto 0);
+	variable ticker:integer range 0 to 2**20-1 := 0;	
+	variable thisedgetime:integer range 0 to 2**20-1;
+	type edgetimes_t is array (0 to 7) of integer range 0 to 2**20-1;
+	variable edgetimes:edgetimes_t;
 	variable fallingedge:boolean := false;
-	variable edgetime:integer range 0 to 7 := 0;
-	variable rowcounter:integer range 0 to 2**16-1 := 0;
+	variable edgeoffset:integer range 0 to 7 := 0;
+	variable prev_incomming:std_logic_vector(7 downto 0);
 	
-	variable accu:integer range 0 to 2**16-1 := 0;
-	variable b:integer range 0 to 2**16-1 := 0;
+	variable accu:integer range 0 to 2**20-1 := 0;
+	variable b:integer range 0 to 2**20-1 := 0;
 	
 	begin
 		-- send out data finely staggered by clocks
@@ -108,56 +103,59 @@ begin
 		if rising_edge(CLK0) then
 			-- determine when clock pulses need to be sent
 			outgoing := "00000000";
-			if (accu<a1) then outgoing(0) := '1'; end if;
-			if (accu<a2) and not (accu<a1) then outgoing(1) := '1'; end if;
-			if (accu<a3) and not (accu<a2) then outgoing(2) := '1'; end if;
-			if (accu<a4) and not (accu<a3) then outgoing(3) := '1'; end if;
-			if (accu<a5) and not (accu<a4) then outgoing(4) := '1'; end if;
-			if (accu<a6) and not (accu<a5) then outgoing(5) := '1'; end if;
-			if (accu<a7) and not (accu<a6) then outgoing(6) := '1'; end if;
-			if (accu<a8) and not (accu<a7) then outgoing(7) := '1'; end if;
+			if (accu<a*1*8) then outgoing(0) := '1'; end if;
+			if (accu<a*2*8) then outgoing(1) := '1'; end if;
+			if (accu<a*3*8) then outgoing(2) := '1'; end if;
+			if (accu<a*4*8) then outgoing(3) := '1'; end if;
+			if (accu<a*5*8) then outgoing(4) := '1'; end if;
+			if (accu<a*6*8) then outgoing(5) := '1'; end if;
+			if (accu<a*7*8) then outgoing(6) := '1'; end if;
+			if (accu<a*8*8) then outgoing(7) := '1'; end if;
 			
-			-- run the bresenheim algorithm 
-			if accu>=a8 then
-				accu := accu-a8;
-			else				
-				accu := accu+b-a8;
-			end if;
-		
 			-- processing after edge was detected
 			if fallingedge then
-				b := rowcounter + edgetime;
-				case edgetime is
-				when 0 => accu := a1;
-				when 1 => accu := a2;
-				when 2 => accu := a3;
-				when 3 => accu := a4;
-				when 4 => accu := a5;
-				when 5 => accu := a6;
-				when 6 => accu := a7;
-				when 7 => accu := a8;
+				-- reset bresenheim
+				case edgeoffset is
+				when 0 => accu := b/2 + (0)*8;
+				when 1 => accu := b/2 + (a) * 8;
+				when 2 => accu := b/2 + (2*a) * 8;
+				when 3 => accu := b/2 + (a+2*a) * 8;
+				when 4 => accu := b/2 + (4*a) * 8;
+				when 5 => accu := b/2 + (4*a+a) * 8;
+				when 6 => accu := b/2 + (4*a+2*a) * 8;
+				when 7 => accu := b/2 + (4*a+2*a+a) * 8;
 				end case;
-				rowcounter := 8-edgetime;
+				-- use total time of last 8 lines and compute bresenheim value 
+				thisedgetime := ticker + edgeoffset;
+				b := (thisedgetime - edgetimes(7)) mod (2**20);				
+				edgetimes(1 to 7) := edgetimes(0 to 6);
+				edgetimes(0) := thisedgetime;
+			-- when no edge, run the bresenheim algorithm 		
+			elsif accu>=a*8*8 then
+				accu := accu-a*8*8;
 			else
-				rowcounter := rowcounter+8;
+				accu := accu+b-a*8*8;
 			end if;
 		
 			-- detect falling edge and determine the exact time shift of the edge
 			if prev_incomming = "11111111" and incomming/="11111111" then
+				if incomming(0)='0' then edgeoffset:=0; 
+				elsif incomming(1)='0' then edgeoffset:=1;
+				elsif incomming(2)='0' then edgeoffset:=2;
+				elsif incomming(3)='0' then edgeoffset:=3;
+				elsif incomming(4)='0' then edgeoffset:=4;
+				elsif incomming(5)='0' then edgeoffset:=5;
+				elsif incomming(6)='0' then edgeoffset:=6;
+				else edgeoffset:=7; 
+				end if;
 				fallingedge := true;
-				if incomming(0)='0' then edgetime:=0; 
-				elsif incomming(1)='0' then edgetime:=1;
-				elsif incomming(2)='0' then edgetime:=2;
-				elsif incomming(3)='0' then edgetime:=3;
-				elsif incomming(4)='0' then edgetime:=4;
-				elsif incomming(5)='0' then edgetime:=5;
-				elsif incomming(6)='0' then edgetime:=6;
-				else edgetime:=7; end if;
 			else
 				fallingedge := false;
-				edgetime:=0;
 			end if;
 			prev_incomming := incomming;
+
+			-- tick up time with overflow
+			ticker := (ticker+8) mod (2**20);
 		end if;
 		
 		-- aquire finely timed samples of the input signal for lower-frequency main processing
@@ -177,7 +175,7 @@ begin
 		if rising_edge(CLK3) then x(7) := CSYNC; end if;
 		
 		-- combinational logic from various clock domains
-		OUTPATTERN(7) <= y(0) or y(1) or y(2) or y(3) or y(4) or y(5) or y(6) or y(7);
+		PIXELCLK <= y(0) or y(1) or y(2) or y(3) or y(4) or y(5) or y(6) or y(7);
 	end process;
 	
 	
