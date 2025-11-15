@@ -45,28 +45,13 @@ begin
 	begin
 		if SELECTOR='0' then
 			a <= 1368;
-			syncshift <= 20;
+			syncshift <= 10;
 		else
 			a <= 1008;
 			syncshift <= 5;
 		end if;
 	end process;
 	
-	process (CSYNC,VID1,VID2,VID3,PIXELCLK)
-	variable t:std_logic := '0';
-	begin
-		if rising_edge(PIXELCLK) then
-			t := not t;
-		end if;
-		OUTPATTERN(0) <= CSYNC;
-		OUTPATTERN(1) <= VID1;
-		OUTPATTERN(2) <= VID2;
-		OUTPATTERN(3) <= VID3;
-		OUTPATTERN(4) <= '0';
-		OUTPATTERN(5) <= PIXELCLK;
-		OUTPATTERN(6) <= '0';
-		OUTPATTERN(7) <= t;
-	end process;
 				
 	-- subdivide to pixels
 	process (CLK0,CLK1,CLK2,CLK3, CSYNC) 
@@ -186,6 +171,42 @@ begin
 		
 		-- combinational logic from various clock domains
 		PIXELCLK <= y(0) or y(1) or y(2) or y(3) or y(4) or y(5) or y(6) or y(7);
+	end process;
+	
+	
+	process (CSYNC,VID1,VID2,VID3,PIXELCLK)
+	variable t:std_logic := '0';
+	variable x:integer range 0 to 7 := 0;
+	variable data:std_logic_vector(11 downto 0) := "000000000000";
+	variable in_csync:std_logic;
+	variable in_vid:std_logic_vector(3 downto 1);
+	begin
+		if rising_edge(PIXELCLK) then
+			data := data(9 downto 0) & in_vid(2) & (in_vid(3) or (in_vid(1) and not in_vid(2)));
+			
+			if in_csync='0' then
+				x := 5;
+			elsif x<5 then
+				x := x+1;
+			else
+				x := 0;
+			end if;
+			
+			OUTPATTERN(1) <= t;
+			OUTPATTERN(2) <= '0';
+			OUTPATTERN(3) <= in_csync;
+			if x=3 then
+				OUTPATTERN(7 downto 4) <= data(3 downto 0);
+			elsif x=0 then
+				OUTPATTERN(7 downto 4) <= data(5 downto 2);
+			end if;
+			
+			in_csync := CSYNC;
+			in_vid := VID3 & VID2 & VID1;			
+			t := not t;
+		end if;		
+		
+		OUTPATTERN(0) <= CSYNC;
 	end process;
 	
 	
